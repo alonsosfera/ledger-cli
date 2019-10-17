@@ -3,10 +3,18 @@ const minimist = require('minimist')
 module.exports = () => {
   const args = minimist(process.argv.slice(2))
 
-  let cmd = args._[0] || 'help'
+   let cmd = args._[0] || 'help'
 
    if (cmd == 'b' || cmd == 'bal') {
      cmd = 'balance'
+   }
+
+   if (cmd == 'p') {
+     cmd = 'print'
+   }
+
+   if (cmd == 'r' || cmd == 'reg') {
+     cmd = 'register'
    }
 
    if (args.version || args.v) {
@@ -22,20 +30,12 @@ module.exports = () => {
        require('./cmds/balance')(args)
        break
 
-     case 'expenses':
-       require('./cmds/expenses')(args)
+     case 'print':
+       require('./cmds/print')(args)
        break
 
-     case 'income':
-       require('./cmds/income')(args)
-       break
-
-     case 'payable':
-       require('./cmds/payable')(args)
-       break
-
-     case 'receivable':
-       require('./cmds/receivable')(args)
+     case 'register':
+       require('./cmds/register')(args)
        break
 
      case 'version':

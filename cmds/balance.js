@@ -6,26 +6,60 @@ var stream = require('stream');
 var outstream = new stream();
 var instream;
 
-module.exports = (args) => {
-  var f = args._[1];
-  if(f != null){
-    ReadFile(f);
-  }else{
+const transactionRgx = /\d{4}\/\d{1,2}\/\d{1,2} .+/,
+      transactionDate = /\d{4}\/\d{1,2}\/\d{1,2}/,
+      transactionDesc = /[^\d{4}\/\d{1,2}\/\d{1,2}]+/,
+      accDesc = /[^\-?\$?\d+\.?\d+$]+/,
+      accAction = /\-?\$?\d+\.?\d?.+/,
+      accAmount = /[\-.|\d]/,
+      accCurren = /[a-zA-z]+/;
 
+module.exports = (args) => {
+  console.log('');
+  if(args.file){
+    console.log(`Balance from "${args.file}"`);
+    ReadFile(args.file);
+  }
+  else if (args.sort) {
+    console.log(`Sorted Balance "${args.sort}"`);
+  }
+  else if (args.price) {
+    console.log('Price DB');
+  }
+  else{
+    ReadFile('income');
+    ReadFile('expenses');
+    ReadFile('payable');
+    ReadFile('bitcoin');
   }
 
  function ReadFile(f){
     instream = fs.createReadStream(f +'.ledger')
     var rl = readline.createInterface(instream, outstream);
+    let ban = false;
+    let
+
     rl.on('line', function(line){
-      var date = line.match(/\d{4}\/\d{1,2}\/\d{1,2}/);
-      date = date == null ? '' : date
-      var description = line.match(/[^\d{4}\/\d{1,2}\/\d{1,2}]+/);
-      var ammount = line.match(/\-?\$?\d+\.?\d+$/);
-      if(ammount){
-        console.log(date+ description +ammount.toString().replace('$',''));
+      if(line.startsWith(";")) return;
+
+      if(ban){
+
+      }
+
+      if(line.match(transactionDate)){
+        ban = true;
+
+
+      }
+
+      var date = line.match(transactionDate);
+      date = (date == null) ? '' : date
+      var description = line.match(transactionDesc);
+      var amount = line.match(/\-?\$?\d+\.?\d+$/);
+      if(amount){
+        console.log(date+ description.toString().replace('$','') +"$"+amount.toString().replace('$',''));
       }else{
-        console.log(date+ description);
+        console.log(date+ description.toString().replace('$',''));
       }
     })
   }

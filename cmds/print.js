@@ -1,9 +1,11 @@
-const { income } = require('../Income.ledger')
+//const { income } = require('../Income.ledger')
 
 module.exports = (args) => {
-  console.log('This is your income')
-  console.log(args);
-  for(i in income){
-    console.log(i);
+  //args._[1]
+  if(args.file){
+    console.log(`Print from "${args.file}"`);
+  }else {
+    console.log('This is your income')
   }
+  console.log(args);
 }
