@@ -35,11 +35,11 @@ module.exports = {
       if(ban){
         let action = line.match(accountAction)
         let amount = action ? action.toString().replace('$','') : null
-        let currency = action ? action[accountCurren] : "USD"
+        let currency = action ? action[0].match(accountCurren) : "USD"
 
         account['description'] = line.match(accountDesc).toString().trim()
         account['amount'] = amount ? parseFloat(amount) : -amount_sum
-        account['currency'] = currency ? currency : 'USD'
+        account['currency'] = currency ? currency[0] : 'USD'
         transaction['accounts'].push(account)
         amount_sum += account['amount']
         account = {}

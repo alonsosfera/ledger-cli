@@ -47,7 +47,17 @@ function ReadFile(f){
  }
 
  function Balance(pf){
+   let beforeAmount = 45;
+
    for(t in pf){
-     console.log(pf[t])
+     console.group(`${pf[t].date} ${pf[t].description}`)
+     for(acc in pf[t].accounts){
+       let space = beforeAmount - pf[t].accounts[acc].description.length - pf[t].accounts[acc].amount.toString().length
+       console.log(`${pf[t].accounts[acc].description}${sprintf(`%${space}.1s`, '')}${parseFloat(pf[t].accounts[acc].amount)} ${pf[t].accounts[acc].currency}`);
+     }
+     console.groupEnd();
+     console.log();
+
+     //console.log(pf[t])
    }
  }
