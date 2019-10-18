@@ -12,8 +12,10 @@
     "ledger": "bin/ledger"
   },
   "dependencies": {
+    "chalk": "^2.4.2",
     "minimist": "^1.2.0",
     "readline": "^1.3.0",
+    "sprintf-js": "^1.1.2",
     "stream": "0.0.2"
   }
 }

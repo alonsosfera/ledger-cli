@@ -1,5 +1,4 @@
 
-let transactions_all = [];
 
 const transactionRgx = /\d{4}\/\d{1,2}\/\d{1,2} .+/,
       transactionDate = /\d{4}\/\d{1,2}\/\d{1,2}/,
@@ -7,11 +6,11 @@ const transactionRgx = /\d{4}\/\d{1,2}\/\d{1,2} .+/,
       accountDesc = /[^\-?\$?\d+\.?\d+$]+/,
       accountAction = /\-?\$?\d+\.?\d?.+/,
       accountAmount = /[\-.|\d]/,
-      //accAmount = /\-?\$?\d+\.?\d+$/,
       accountCurren = /[a-zA-z]+/;
 
 module.exports = {
   parse: function (lines, fl) {
+  let transactions_all = []
     let ban = false
     let transaction = {}
     let account = {}

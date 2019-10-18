@@ -1,70 +1,53 @@
 //const income  = require('../Income.ledger')
 var fs = require('fs');
-var readline = require('readline');
-var stream = require('stream');
+var parser = require('../parser.js');
 
-var outstream = new stream();
-var instream;
-
-const transactionRgx = /\d{4}\/\d{1,2}\/\d{1,2} .+/,
-      transactionDate = /\d{4}\/\d{1,2}\/\d{1,2}/,
-      transactionDesc = /[^\d{4}\/\d{1,2}\/\d{1,2}]+/,
-      accDesc = /[^\-?\$?\d+\.?\d+$]+/,
-      accAction = /\-?\$?\d+\.?\d?.+/,
-      accAmount = /[\-.|\d]/,
-      accCurren = /[a-zA-z]+/;
 
 module.exports = (args) => {
   console.log('');
+  let file = '';
   if(args.file){
-    console.log(`Balance from "${args.file}"`);
-    ReadFile(args.file);
+    file = args.file
   }
-  else if (args.sort) {
+  if (args.sort) {
     console.log(`Sorted Balance "${args.sort}"`);
   }
-  else if (args.price) {
+  if (args.price) {
     console.log('Price DB');
   }
-  else{
-    ReadFile('income');
-    ReadFile('expenses');
-    ReadFile('payable');
-    ReadFile('bitcoin');
+
+  if(file == ''){
+    ReadFile('income')
+    ReadFile('expenses')
+    ReadFile('payable')
+    ReadFile('bitcoin')
+  }else {
+    ReadFile(file)
   }
-
- function ReadFile(f){
-    instream = fs.createReadStream(f +'.ledger')
-    var rl = readline.createInterface(instream, outstream);
-    let ban = false;
-    let
-
-    rl.on('line', function(line){
-      if(line.startsWith(";")) return;
-
-      if(ban){
-
-      }
-
-      if(line.match(transactionDate)){
-        ban = true;
-
-
-      }
-
-      var date = line.match(transactionDate);
-      date = (date == null) ? '' : date
-      var description = line.match(transactionDesc);
-      var amount = line.match(/\-?\$?\d+\.?\d+$/);
-      if(amount){
-        console.log(date+ description.toString().replace('$','') +"$"+amount.toString().replace('$',''));
-      }else{
-        console.log(date+ description.toString().replace('$',''));
-      }
-    })
-  }
-
-  //console.log(args._[1]);
-  //console.log('This is a balance')
-  //console.log('\x1b[33m%s\x1b[0m', 'hi!')
 }
+
+function ReadFile(f){
+   let file = f +'.ledger'
+
+   fs.readFile(file, 'utf8', (err, contents) =>{
+     if (contents != null) {
+       file_lenght = (contents.split('\n').length-1 )
+     }else {
+       console.log('Error en el archivo...\n')
+       return
+     }
+     console.log(`Balance from "${file}"`)
+
+     if(file_lenght > 0){
+       let lines = contents.split('\n')
+       let parsedFile = parser.parse(lines, file_lenght)
+       Balance(parsedFile)
+     }
+   })
+ }
+
+ function Balance(pf){
+   for(t in pf){
+     console.log(pf[t])
+   }
+ }
