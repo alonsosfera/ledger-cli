@@ -1,1 +1,3 @@
 # ledger-cli
+
+To use, after cloning the repo, please run 'npm install -g ledger-cli'...
