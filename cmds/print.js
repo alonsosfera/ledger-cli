@@ -5,7 +5,8 @@ var sprintf = require('sprintf-js').sprintf,
     vsprintf = require('sprintf-js').vsprintf
 const parser = require('../parser.js');
 
-let sort = ""
+let sort = "", i = 1
+let transactions_all = []
 
 
 module.exports = (args) => {
@@ -28,6 +29,7 @@ module.exports = (args) => {
     Print('receivable')
     Print('bitcoin')
   }else {
+    i = 5
     Print(file)
   }
 }
@@ -42,18 +44,22 @@ function Print(f){
        console.log('Error en el archivo...\n')
        return
      }
-     console.log(chalk.green(`Print from "${file}"`))
-     sort != '' ? console.log(chalk.grey('Sorted by: ' +sort+'\n')) : console.log('');
+     //console.log(chalk.green(`Transactions from "${file.split('.')[0]}"`))
+     //sort != '' ? console.log(chalk.grey('Sorted by: ' +sort+'\n')) : console.log('');
 
      if(file_lenght > 0){
        let lines = contents.split('\n')
-       var parsedFile = parser.parse(lines, file_lenght)
-       FormatPrint(parsedFile)
+       var parsedFile = parser.parse(lines, file_lenght, transactions_all, false)
+       if(i == 5){
+         FormatPrint(parsedFile)
+       }
+       i++
      }
    })
  }
 
  function FormatPrint(pf){
+   console.log(pf[0]);
    if(sort != ''){
      if (sort == 'd' || sort == 'date' ){
         pf.sort(function(a,b) {
@@ -74,14 +80,14 @@ function Print(f){
    for(t in pf){
      console.group(`${pf[t].date} ${pf[t].description}`)
      for(acc in pf[t].accounts){
-       let space = beforeAmount - pf[t].accounts[acc].description.length - pf[t].accounts[acc].amount.toString().length
+       let space = beforeAmount - pf[t].accounts[acc].description.length - pf[t].accounts[acc].amount.toFixed(2).toString().length
        let curr = ''
        if(pf[t].accounts[acc].currency == "BTC"){
          curr = pf[t].accounts[acc].currency
          space -= curr.length
        }
        let sign = pf[t].accounts[acc].currency != "BTC" ? '$' : ''
-       console.log(`${pf[t].accounts[acc].description}${sprintf(`%${space}.1s`, '')}${sign}${parseFloat(pf[t].accounts[acc].amount)} ${curr}`);
+       console.log(`${pf[t].accounts[acc].description}${sprintf(`%${space}.1s`, '')}${sign}${parseFloat(pf[t].accounts[acc].amount).toFixed(2)} ${curr}`);
      }
      console.groupEnd();
      console.log();

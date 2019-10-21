@@ -1,4 +1,4 @@
-# ledger-cli
+# Ledger-CLI implementation by Alonso Gutiérrez
 
 To use, after cloning the repo, please run `npm install -g ledger-cli`...
 

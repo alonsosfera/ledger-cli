@@ -1,20 +1,31 @@
 const menus = {
   main: `
-    ledger [command] <options>
+    Ledger [command] <options>
 
-    balance ............ show current balance
-    income ............. show current income balance
-    expenses ........... show current expense balance
-    payable ............ show current payable balance
-    receivable ......... show current receivable balance
-    version ............ show package version
-    help ............... show help menu for a command
+    balance ............ Show current balance
+    register ........... Show register from transactions
+    print .............. Print transactions
+    version ............ Show package version
+    help ............... Show help menu for a command
     `,
 
   balance: `
     ledger balance <options>
 
-    --account, -a ..... the account to check
+      --sort ..... Sort balance by <date | description>
+      --file ..... Get balance from <file_name>
+    `,
+  register: `
+    ledger register <options>
+
+      --sort ..... Sort register by <date | description>
+      --file ..... Get register from <file_name>
+    `,
+  print: `
+    ledger print <options>
+
+      --sort ..... Sort print by <date | description>
+      --file ..... Print from <file_name>
     `,
 
 }

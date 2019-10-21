@@ -4,8 +4,9 @@ const chalk = require('chalk');
 var sprintf = require('sprintf-js').sprintf,
     vsprintf = require('sprintf-js').vsprintf
 const parser = require('../parser.js');
+let transactions_all = []
 
-let sort = ""
+let sort = "", i = 1
 
 
 module.exports = (args) => {
@@ -28,6 +29,7 @@ module.exports = (args) => {
     ReadFile('receivable')
     ReadFile('bitcoin')
   }else {
+    i = 5
     ReadFile(file)
   }
 }
@@ -42,13 +44,16 @@ function ReadFile(f){
       console.log('Error en el archivo...\n')
       return
     }
-    console.log(chalk.green(`Register from "${file.split('.')[0]}"`))
-    sort != '' ? console.log(chalk.grey('Sorted by: ' +sort+'\n')) : console.log('');
+    //console.log(chalk.green(`Register from "${file.split('.')[0]}"`))
+    //sort != '' ? console.log(chalk.grey('Sorted by: ' +sort+'\n')) : console.log('');
 
     if(file_lenght > 0){
       let lines = contents.split('\n')
-      var parsedFile = parser.parse(lines, file_lenght)
-      Register(parsedFile)
+      var parsedFile = parser.parse(lines, file_lenght, transactions_all, false)
+      if(i == 5){
+        Register(parsedFile)
+      }
+      i++
     }
   })
  }
@@ -92,9 +97,9 @@ function Register(pf){
       let sign = accCurrency != "BTC" ? '$' : ''
       if (i == 0){
         i++
-        console.group(`${traDate} ${traDescription}${sprintf(`%${afterT}.1s`,'')} ${chalk.blue(accDesc)}${sprintf(`%${space}.1s`, '')}${accAmount < 0 ? chalk.red(sign) : sign}${accAmount < 0 ? chalk.red(accAmount) : accAmount} ${accAmount < 0 ? chalk.red(accCurrency) : accCurrency}${sprintf(`%${accCurrency != 'BTC' ? 19 - money.toString().length : 17 - bitcoin.toString().length}.1s`, '')}${accCurrency != 'BTC' ? money < 0 ? chalk.red('$'+money) : '$'+money : bitcoin < 0 ? chalk.red(bitcoin+' BTC') : bitcoin +' BTC'}`)
+        console.group(`${traDate} ${traDescription}${sprintf(`%${afterT}.1s`,'')} ${chalk.blue(accDesc)}${sprintf(`%${space}.1s`, '')}${accAmount < 0 ? chalk.red(sign) : sign}${accAmount < 0 ? chalk.red(accAmount) : accAmount} ${accAmount < 0 ? chalk.red(accCurrency) : accCurrency}${sprintf(`%${accCurrency != 'BTC' ? 19 - money.toFixed(2).toString().length : 17 - bitcoin.toString().length}.1s`, '')}${accCurrency != 'BTC' ? money < 0 ? chalk.red('$'+money.toFixed(2)) : '$'+money.toFixed(2) : bitcoin < 0 ? chalk.red(bitcoin+' BTC') : bitcoin +' BTC'}`)
       }else{
-        console.log(`${sprintf(`%${blankspace}.1s`,'')}${chalk.blue(accDesc)}${sprintf(`%${space}.1s`, '')}${accAmount < 0 ? chalk.red(sign) : sign}${accAmount < 0 ? chalk.red(accAmount) : accAmount} ${accAmount < 0 ? chalk.red(accCurrency) : accCurrency}${sprintf(`%${accCurrency != 'BTC' ? 19 - money.toString().length : 17 - bitcoin.toString().length}.1s`, '')}${accCurrency != 'BTC' ? money < 0 ? chalk.red('$'+money) : '$'+money : bitcoin < 0 ? chalk.red(bitcoin+' BTC') : bitcoin +' BTC'}`);
+        console.log(`${sprintf(`%${blankspace}.1s`,'')}${chalk.blue(accDesc)}${sprintf(`%${space}.1s`, '')}${accAmount < 0 ? chalk.red(sign) : sign}${accAmount < 0 ? chalk.red(accAmount) : accAmount} ${accAmount < 0 ? chalk.red(accCurrency) : accCurrency}${sprintf(`%${accCurrency != 'BTC' ? 19 - money.toFixed(2).toString().length : 17 - bitcoin.toString().length}.1s`, '')}${accCurrency != 'BTC' ? money < 0 ? chalk.red('$'+money.toFixed(2)) : '$'+money.toFixed(2) : bitcoin < 0 ? chalk.red(bitcoin+' BTC') : bitcoin +' BTC'}`);
         bitcoin > 0 ? console.log(`${sprintf(`%${97 - bitcoin.toString().length - 3}.1s`, '')}${bitcoin} BTC`) : null
       }
     }
