@@ -60,13 +60,6 @@ function ReadFile(f){
  }
 
  function Balance(pf){
-   console.log(pf);
-   let final = []
-   /*for (t in pf){
-     for (acc in pf[t].accounts){
-      final[pf[t].accounts[acc].description] ?
-     }
-   }*/
 
    if(sort != ''){
      if (sort == 'd' || sort == 'date' ){
@@ -87,21 +80,24 @@ function ReadFile(f){
    let money = 0, bitcoin = 0
 
    for(t in pf){
-     //console.group(`${pf[t].date} ${pf[t].description}`)
-     for(acc in pf[t].accounts){
-       let accCurrency = '', accDesc = pf[t].accounts[acc].description, accAmount = parseFloat(pf[t].accounts[acc].amount)
-       let space = beforeAmount - pf[t].accounts[acc].amount.toString().length
-       //let space = beforeAmount -  accAmount.toFixed(2).toString().length
+     let s = beforeAmount - pf[t].amount.toString().length
+     let accCurrency = pf[t].currency, accMain = pf[t].name, accAmount = parseFloat(pf[t].amount)
+     if(accCurrency == "BTC"){
+       bitcoin += accAmount
+       s -= 3
+     }else {
+       money += accAmount
+     }
+     console.log(`${sprintf(`%${s}.1s`, '')}${accCurrency == 'BTC' ? accAmount + ' BTC' : '$'+accAmount} ${accMain}`);
 
-       if(pf[t].accounts[acc].currency == "BTC"){
-         accCurrency = pf[t].accounts[acc].currency
-         space -= accCurrency.length
-         bitcoin += accAmount
-       }else {
-         money += accAmount
-       }
-       let sign = accCurrency != "BTC" ? '$' : ''
-       console.log(`${sprintf(`%${space}.1s`, '')}${accCurrency == 'BTC' ? accAmount + ' BTC' : '$'+accAmount} ${accDesc}`);
+     //console.group(`${pf[t].date} ${pf[t].description}`)
+     for(acc in pf[t].subaccounts){
+       let space = beforeAmount - pf[t].subaccounts[acc].amount.toString().length
+       let subACurrency = pf[t].subaccounts[acc].currency, subA = pf[t].subaccounts[acc].name, subAmount = parseFloat(pf[t].subaccounts[acc].amount)
+       //let space = beforeAmount -  accAmount.toFixed(2).toString().length
+       if(subACurrency == 'BTC') space -= 3
+       let sign = subACurrency != "BTC" ? '$' : ''
+       console.log(`${sprintf(`%${space}.1s`, '')}${subACurrency == 'BTC' ? subAmount + ' BTC' : '$'+subAmount}   ${subA}`);
      }
    }
    let sp
