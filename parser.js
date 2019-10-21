@@ -59,24 +59,54 @@ module.exports = {
       let amount_sum = 0.0
 
       lines.forEach(function (line, index){
-        if(line.startsWith(";") || line.length == 0 || line.match(transactionDate)) return
+        if(line.startsWith(";") || line.length == 0) return
 
-        let action = line.match(accountAction)
-        let amount = action ? action.toString().replace('$','') : null
-        let currency = action ? action[0].match(accountCurren) : lastCurrency
-        let acc = line.match(accountDesc).toString().trim()
-        let master = acc.substr(0,acc.indexOf(':'))
+        if(line.match(transactionDate)){
+          if (ban){
+            transactions_all.push(accountFather)
+            amount_sum = 0.0
+          }
+          ban = true
+          accountFather = { subaccounts: [] }
+          return
+        }
 
-        if(!accountFather[master]){
+        if(ban){
+          let action = line.match(accountAction)
+          let amount = action ? action.toString().replace('$','') : null
+          let currency = action ? action[0].match(accountCurren) : lastCurrency
+          let acc = line.match(accountDesc).toString().trim()
+          let master = acc.substr(0,acc.indexOf(':'))
+
+          accountFather['name'] = master
+
+          subaccounts['name'] = acc.substr(acc.indexOf(':')+1)
+          subaccounts['amount'] = amount ? parseFloat(amount) : -amount_sum
+          subaccounts['currency'] = currency ? currency[0] : null
+          accountFather['subaccounts'].push(subaccounts)
+          amount_sum += subaccounts['amount']
+          subaccounts = {}
+          lastCurrency = currency
+        }
+
+        if (index == fl - 1){
+          transactions_all.push(accountFather)
+        }
+
+        /*if(!accountFather[master]){
           accountFather = { [master]: [] }
-        }else return
+        }
+        //console.log(line);
+        //console.log(accountFather);
 
         subaccounts['name'] = acc.substr(acc.indexOf(':')+1)
         subaccounts['amount'] = amount ? parseFloat(amount) : -amount_sum
         subaccounts['currency'] = currency ? currency[0] : null
         accountFather[master].push(subaccounts)
-        transactions_all.push(accountFather)
+        //transactions_all.push(accountFather)
         amount_sum += subaccounts['amount']
+        lastCurrency = currency
+        console.log(accountFather);*/
       })
       return transactions_all
     }

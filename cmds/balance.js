@@ -61,11 +61,6 @@ function ReadFile(f){
 
  function Balance(pf){
    console.log(pf);
-   console.log(pf[0]);
-   console.log(pf[1]);
-   console.log(pf[2]);
-   console.log(pf[3]);
-   console.log(pf[4]);
    let final = []
    /*for (t in pf){
      for (acc in pf[t].accounts){
